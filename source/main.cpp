@@ -67,20 +67,28 @@ int main(int argc, char** argv)
 	printf("OpenGL %s\n", glGetString(GL_VERSION));
 	printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
+	double currentFrame = glfwGetTime();
+	double lastFrame = currentFrame;
+	double deltaTime;
+
 	// Loop
 	while (!glfwWindowShouldClose(window))
 	{
 		int width, height;
-		float ratio, time;
+		float ratio;
+		double del;
 		glfwGetFramebufferSize(window, &width, &height);
 		ratio = width / (float)height;
-		time = (float)glfwGetTime();
+		
+		currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
 		glViewport(0, 0, width, height);
 		glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		printf("dt %f\n", time);
+		printf("dt %f\n", deltaTime);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
