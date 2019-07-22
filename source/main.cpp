@@ -76,7 +76,6 @@ int main(int argc, char** argv)
 	{
 		int width, height;
 		float ratio;
-		double del;
 		glfwGetFramebufferSize(window, &width, &height);
 		ratio = width / (float)height;
 		
