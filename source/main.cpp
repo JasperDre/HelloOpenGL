@@ -59,9 +59,9 @@ int main(int argc, char** argv)
 	}
 
 	// Print version numbers
-	int Major, Minor, Rev;
-	glfwGetVersion(&Major, &Minor, &Rev);
-	printf("GLFW %d.%d.%d\n", Major, Minor, Rev);
+	int major, minor, revision;
+	glfwGetVersion(&major, &minor, &revision);
+	printf("GLFW %d.%d.%d\n", major, minor, revision);
 	printf("OpenGL %s\n", glGetString(GL_VERSION));
 	printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
@@ -70,11 +70,6 @@ int main(int argc, char** argv)
 	{
 		glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE))
-		{
-			glfwSetWindowShouldClose(window, GL_TRUE);
-		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -86,4 +81,3 @@ int main(int argc, char** argv)
 
 	return 0;
 }
-
