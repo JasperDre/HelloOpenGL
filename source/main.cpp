@@ -58,6 +58,8 @@ int main(int argc, char** argv)
 		exit(-1);
 	}
 
+	glfwSwapInterval(1);
+
 	// Print version numbers
 	int major, minor, revision;
 	glfwGetVersion(&major, &minor, &revision);
@@ -68,8 +70,17 @@ int main(int argc, char** argv)
 	// Loop
 	while (!glfwWindowShouldClose(window))
 	{
+		int width, height;
+		float ratio, time;
+		glfwGetFramebufferSize(window, &width, &height);
+		ratio = width / (float)height;
+		time = (float)glfwGetTime();
+
+		glViewport(0, 0, width, height);
 		glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		printf("dt %f\n", time);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
