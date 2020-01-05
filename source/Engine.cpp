@@ -58,7 +58,7 @@ void Engine::Loop()
 		glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		printf("dt %f\n", deltaTime);
+		//printf("dt %f\n", deltaTime);
 
 		glfwSwapBuffers(myWindow);
 		glfwPollEvents();
@@ -85,7 +85,7 @@ bool Engine::SetupWindow()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	myWindow = glfwCreateWindow(1240, 720, "Hello OpenGL 4.7", nullptr, nullptr);
+	myWindow = glfwCreateWindow(1240, 720, "Hello OpenGL 4.6", nullptr, nullptr);
 
 	if (myWindow == nullptr)
 	{
