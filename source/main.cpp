@@ -12,9 +12,7 @@ void ErrorCallback(int arg_Error, const char* arg_Description)
 void KeyCallback(GLFWwindow* arg_Window, int arg_Key, int arg_Scancode, int arg_Action, int arg_Mode)
 {
 	if (arg_Key == GLFW_KEY_ESCAPE && arg_Action == GLFW_PRESS)
-	{
 		glfwSetWindowShouldClose(arg_Window, GL_TRUE);
-	}
 }
 
 int main(int argc, char** argv)
