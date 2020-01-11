@@ -10,6 +10,7 @@ public:
 
 	void Setup();
 	void Loop();
+	void Render();
 	void Destroy();
 
 private:

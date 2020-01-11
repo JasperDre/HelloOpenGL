@@ -15,15 +15,20 @@ Engine::~Engine()
 {
 }
 
-static void ErrorCallback(int arg_Error, const char* arg_Description)
+static void ErrorCallback(int anError, const char* aDescription)
 {
-	fprintf(stderr, "Error: %s\n", arg_Description);
+	fprintf(stderr, "Error: %s\n", aDescription);
 }
 
-static void KeyCallback(GLFWwindow* arg_Window, int arg_Key, int arg_Scancode, int arg_Action, int arg_Mode)
+static void FrameBufferSizeCallback(GLFWwindow* aWindow, int aWidth, int aHeight)
 {
-	if (arg_Key == GLFW_KEY_ESCAPE && arg_Action == GLFW_PRESS)
-		glfwSetWindowShouldClose(arg_Window, GL_TRUE);
+	glViewport(0, 0, aWidth, aHeight);
+}
+
+static void KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode)
+{
+	if (aKey == GLFW_KEY_ESCAPE && anAction == GLFW_PRESS)
+		glfwSetWindowShouldClose(aWindow, GL_TRUE);
 }
 
 void Engine::Setup()
@@ -65,6 +70,11 @@ void Engine::Loop()
 	}
 }
 
+void Engine::Render()
+{
+
+}
+
 void Engine::Destroy()
 {
 	glfwDestroyWindow(myWindow);
@@ -97,6 +107,8 @@ bool Engine::SetupWindow()
 	glfwMakeContextCurrent(myWindow);
 
 	glfwSetErrorCallback(ErrorCallback);
+
+	glfwSetFramebufferSizeCallback(myWindow, FrameBufferSizeCallback);
 
 	glfwSetKeyCallback(myWindow, KeyCallback);
 
