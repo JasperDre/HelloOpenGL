@@ -1,8 +1,20 @@
 # Minimum CMake version
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.7)
+
+# Generated project name
+project(HelloOpenGL)
+
+# C++ standard (C++17)
+set(CMAKE_CXX_STANDARD 17)
+
+# Add folders for the generated projects
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
+set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
 
 # Custom macro function to add project filters
-macro(add_project_filters path input_list prepend)
+macro(MACRO_PROJECT_FILTER path input_list prepend)
   foreach(_source IN ITEMS ${${input_list}})
     get_filename_component(_source_path "${_source}" PATH)
     file(RELATIVE_PATH _source_path_rel "${path}" "${_source_path}")
@@ -11,50 +23,40 @@ macro(add_project_filters path input_list prepend)
   endforeach()
 endmacro()
 
-# Generated project name
-project(HelloOpenGL)
-
-# C++ standard (C++17)
-set(CMAKE_CXX_STANDARD 17)
-
-# Add filters/folders for the generated projects
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# Source files
-set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
-set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
-
-# Executable definition and properties
 file(GLOB_RECURSE SRC
     "${SRC_DIR}/*.cpp"
-)
-
-file(GLOB_RECURSE INC
     "${SRC_DIR}/*.h"
+    "${SRC_DIR}/*.hpp"
 )
 
-add_executable(${PROJECT_NAME} ${SRC} ${INC})
+MACRO_PROJECT_FILTER(${SRC_DIR} SRC Source)
+
+add_executable(${PROJECT_NAME} ${SRC})
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:DEBUG>")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:RELEASE>")
 
 # GLFW
-set(GLFW_DIR "${LIB_DIR}/glfw")
+set(GLFW_DIR "${DEP_DIR}/glfw")
+set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build shared libraries")
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
 set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
 set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Build the GLFW documentation")
 set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
+set(GLFW_VULKAN_STATIC OFF CACHE INTERNAL "Assume the Vulkan loader is linked with the application")
+set(GLFW_USE_HYBRID_HPG ON CACHE INTERNAL "Force use of high-performance GPU on hybrid systems")
 add_subdirectory("${GLFW_DIR}")
-target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")
-target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
-target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
+target_link_libraries(${PROJECT_NAME} "glfw")
 
 # GLAD
-set(GLAD_DIR "${LIB_DIR}/glad")
+set(GLAD_DIR "${DEP_DIR}/glad")
 add_subdirectory("${GLAD_DIR}")
 target_link_libraries(${PROJECT_NAME} "glad" "${GLAD_LIBRARIES}")
-target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_BINARY_DIR}/dependencies/glad/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 
-# Add project filters to VS
-add_project_filters(${SRC_DIR} SRC Source)
-add_project_filters(${SRC_DIR} INC Include)
+# Testing
+enable_testing()
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
 # Debugging
 message(STATUS "This is the BINARY dir " ${PROJECT_BINARY_DIR})
