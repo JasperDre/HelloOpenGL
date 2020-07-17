@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
 	glfwSetKeyCallback(window, KeyCallback);
 
-	glfwSetFramebufferSizeCallback(myWindow, FrameBufferSizeCallback);
+	glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallback);
 
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
