@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-void ErrorCallback(int anError, const char* aDescription)
+static void ErrorCallback(int anError, const char* aDescription)
 {
 	fprintf(stderr, "Error: %s\n", aDescription);
 }
@@ -14,7 +14,7 @@ static void FrameBufferSizeCallback(GLFWwindow* aWindow, int aWidth, int aHeight
 	glViewport(0, 0, aWidth, aHeight);
 }
 
-void KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode)
+static void KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode)
 {
 	if (aKey == GLFW_KEY_ESCAPE && anAction == GLFW_PRESS)
 		glfwSetWindowShouldClose(aWindow, GL_TRUE);
