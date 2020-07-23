@@ -1,3 +1,3 @@
 # HelloOpenGL
 
-Use `Setup.bat` or `Setup.py` to prepare and generate the projects.
+Use `Setup.bat` to prepare and generate the projects.
