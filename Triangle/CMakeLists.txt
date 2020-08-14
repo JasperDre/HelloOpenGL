@@ -21,6 +21,10 @@ add_subdirectory("${GLAD_DIR}" GLAD)
 target_include_directories(Triangle PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/GLAD/include")
 target_link_libraries(Triangle "glad")
 
+# GLM
+set(GLM_DIR "${DEP_DIR}/GLM")
+target_include_directories(Triangle PRIVATE "${GLM_DIR}")
+
 # Debugging
 message(STATUS "This is the BINARY directory " ${PROJECT_BINARY_DIR})
 message(STATUS "This is the SOURCE directory " ${PROJECT_SOURCE_DIR})
