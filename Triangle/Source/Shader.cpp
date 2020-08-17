@@ -7,9 +7,12 @@
 #include <vector>
 
 Shader::Shader(const std::string& aPath, ShaderType aType)
+    : myShaderType(aType)
+    , myID(0)
+    , myType(0)
+    , myPath(aPath)
+    , myName("")
 {
-    myPath = aPath;
-    myShaderType = aType;
     myName = GetNameFromPath(aPath);
     myType = GetShaderType(aType);
 
@@ -91,11 +94,13 @@ unsigned int Shader::GetShaderType(ShaderType aType)
 {
     switch (aType)
     {
+        case ShaderType::None:
+            return GL_NONE;
         case ShaderType::Vertex:
             return GL_VERTEX_SHADER;
         case ShaderType::Fragment:
             return GL_FRAGMENT_SHADER;
         default:
-            return 0;
+            return GL_NONE;
     }
 }

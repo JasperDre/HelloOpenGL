@@ -5,8 +5,9 @@
 
 enum class ShaderType
 {
-    Vertex = 0,
-    Fragment = 1
+    None = 0,
+    Vertex = 1,
+    Fragment = 2
 };
 
 class Shader
