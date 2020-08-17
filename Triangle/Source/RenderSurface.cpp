@@ -1,8 +1,7 @@
 #include "RenderSurface.h"
 
 #include <GLFW/glfw3.h>
-
-#include <iostream>
+#include <cstdio>
 
 RenderSurface::RenderSurface()
 	: myWindow(nullptr)
@@ -16,7 +15,7 @@ RenderSurface::RenderSurface()
 
 	if (!glfwInit())
 	{
-		std::cout << "Error: " << "Failed to initialize GLFW" << std::endl;
+		printf("Failed to initialize GLFW\n");
 		glfwTerminate();
 		return;
 	}
@@ -30,7 +29,7 @@ RenderSurface::RenderSurface()
 	myWindow = glfwCreateWindow(1240, 720, "Hello OpenGL", nullptr, nullptr);
 	if (!myWindow)
 	{
-		std::cout << "Error: " << "Failed to open a GLFW window" << std::endl;
+		printf("Failed to open a GLFW window\n");
 		glfwTerminate();
 		return;
 	}
@@ -85,7 +84,7 @@ void RenderSurface::Destroy()
 
 void RenderSurface::ErrorCallback(int anError, const char* aDescription)
 {
-	std::cout << "Error: " << aDescription << std::endl;
+	printf("%i %s\n", anError, aDescription);
 }
 
 void RenderSurface::FrameBufferSizeCallback(GLFWwindow* aWindow, int aWidth, int aHeight)

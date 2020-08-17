@@ -1,6 +1,6 @@
 #pragma once
 
-class Shader;
+class ShaderLibrary;
 
 class RenderContext
 {
@@ -8,15 +8,17 @@ public:
 	RenderContext();
 	~RenderContext();
 
+	void Render(int aWidth, int aHeight);
+
+private:
 	void PrintDebugInfo();
 	void CompileShaders();
 	void GenerateVertexArrayObject();
 	void GenerateVertexBufferObject();
-	void Render(int aWidth, int aHeight);
+	void BindBuffer();
 
 private:
-	Shader* myVertexShader;
-	Shader* myFragmentShader;
+	ShaderLibrary* myShaderLibrary;
 	unsigned int myVertexArrayID;
 	unsigned int myVertexBufferID;
 };

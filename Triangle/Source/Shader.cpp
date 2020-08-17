@@ -1,4 +1,5 @@
 #include "Shader.h"
+
 #include <glad/glad.h>
 
 #include <iostream>
@@ -9,6 +10,7 @@
 Shader::Shader(const std::string& aPath, ShaderType aType)
 {
     myPath = aPath;
+    myShaderType = aType;
     myName = GetNameFromPath(aPath);
     myType = GetShaderType(aType);
 
@@ -18,7 +20,6 @@ Shader::Shader(const std::string& aPath, ShaderType aType)
 
 Shader::~Shader()
 {
-    glDeleteProgram(myProgramID);
 }
 
 std::string Shader::ReadFile(const std::string& aPath)
@@ -42,74 +43,40 @@ std::string Shader::ReadFile(const std::string& aPath)
 
 void Shader::Compile(const std::string& aShaderSource)
 {
-    GLuint myProgramID = glCreateProgram();
-    GLuint shaderID = glCreateShader(myType);
+    myID = glCreateShader(myType);
 
     std::cout << "Compiling " << myName << std::endl;
 
     const GLchar* sourceCStr = aShaderSource.c_str();
-    glShaderSource(shaderID, 1, &sourceCStr, 0);
-    glCompileShader(shaderID);
+    glShaderSource(myID, 1, &sourceCStr, nullptr);
+    glCompileShader(myID);
 
     GLint isCompiled = GL_FALSE;
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
+    glGetShaderiv(myID, GL_COMPILE_STATUS, &isCompiled);
     if (isCompiled == GL_FALSE)
     {
         GLint maxInfoLength = 0;
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxInfoLength);
+        glGetShaderiv(myID, GL_INFO_LOG_LENGTH, &maxInfoLength);
 
         if (maxInfoLength > 0)
         {
             std::vector<GLchar> infoLog(maxInfoLength);
-            glGetShaderInfoLog(shaderID, maxInfoLength, &maxInfoLength, &infoLog[0]);
-            std::cout << &infoLog[0] << std::endl;
+            glGetShaderInfoLog(myID, maxInfoLength, &maxInfoLength, &infoLog[0]);
+            printf("%s\n", &infoLog[0]);
         }
     }
-
-    std::cout << "Linking program to " << myName << std::endl;
-
-    glAttachShader(myProgramID, shaderID);
-    glLinkProgram(myProgramID);
-
-    GLint isLinked = GL_FALSE;
-    glGetShaderiv(shaderID, GL_LINK_STATUS, &isLinked);
-    if (isLinked == GL_FALSE)
-    {
-        GLint maxInfoLength = 0;
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxInfoLength);
-
-        if (maxInfoLength > 0)
-        {
-            std::vector<GLchar> infoLog(maxInfoLength);
-            glGetShaderInfoLog(shaderID, maxInfoLength, &maxInfoLength, &infoLog[0]);
-            std::cout << &infoLog[0] << std::endl;
-        }
-    }
-
-    glDetachShader(myProgramID, shaderID);
-    glDeleteShader(shaderID);
 
     std::cout << "Compiled " << myName << std::endl;
 }
 
-void Shader::Bind() const
+void Shader::SetUniformLocation(unsigned int aProgramID, std::string& aName, glm::vec4 aLocation)
 {
-    glUseProgram(myProgramID);
+    glUniform4f(GetUniformLocation(aProgramID, aName), aLocation.x, aLocation.y, aLocation.z, aLocation.w);
 }
 
-void Shader::Unbind() const
+int Shader::GetUniformLocation(unsigned int aProgramID, const std::string& aName)
 {
-    glUseProgram(0);
-}
-
-void Shader::SetUniformLocation(std::string& aName, glm::vec4 aLocation)
-{
-    glUniform4f(GetUniformLocation(aName), aLocation.x, aLocation.y, aLocation.z, aLocation.w);
-}
-
-int Shader::GetUniformLocation(const std::string& aName)
-{
-    return glGetUniformLocation(myProgramID, aName.c_str());
+    return glGetUniformLocation(aProgramID, aName.c_str());
 }
 
 std::string Shader::GetNameFromPath(const std::string& aPath)
