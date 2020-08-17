@@ -7,9 +7,11 @@
 #include <string>
 
 ShaderLibrary::ShaderLibrary()
-	: myProgramID(0)
+	: myVertexShader(nullptr)
+    , myFragmentShader(nullptr)
+    , myProgramID(0)
 {
-	unsigned int myProgramID = glCreateProgram();
+	myProgramID = glCreateProgram();
 
     myVertexShader = new Shader("../../Data/Shaders/RedVertexShader.glsl", ShaderType::Vertex);
     myFragmentShader = new Shader("../../Data/Shaders/RedFragmentShader.glsl", ShaderType::Fragment);
@@ -37,15 +39,9 @@ void ShaderLibrary::AttachShaders(const Shader& aVertexShader, const Shader& aFr
     glGetProgramiv(myProgramID, GL_LINK_STATUS, &isLinked);
     if (isLinked == GL_FALSE)
     {
-        GLint maxInfoLength = 0;
-        glGetProgramiv(myProgramID, GL_INFO_LOG_LENGTH, &maxInfoLength);
-
-        if (maxInfoLength > 0)
-        {
-            std::vector<GLchar> infoLog(maxInfoLength);
-            glGetProgramInfoLog(myProgramID, maxInfoLength, &maxInfoLength, &infoLog[0]);
-            printf("%s\n", &infoLog[0]);
-        }
+        GLchar infoLog[512];
+        glGetProgramInfoLog(myProgramID, 512, nullptr, infoLog);
+        printf("%s\n", infoLog);
     }
 
     glDetachShader(myProgramID, vertexShaderID);
@@ -56,5 +52,8 @@ void ShaderLibrary::AttachShaders(const Shader& aVertexShader, const Shader& aFr
 
 void ShaderLibrary::BindShaders()
 {
+    if (!myVertexShader || !myFragmentShader)
+        return;
+
     glUseProgram(myProgramID);
 }
