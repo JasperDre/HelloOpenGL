@@ -15,7 +15,8 @@ public:
 	void Render(int aWidth, int aHeight);
 
 private:
-	Shader* myShader;
+	Shader* myVertexShader;
+	Shader* myFragmentShader;
 	unsigned int myVertexArrayID;
 	unsigned int myVertexBufferID;
 };

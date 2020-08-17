@@ -12,7 +12,8 @@ static const GLfloat g_vertex_buffer_data[] = {
 };
 
 RenderContext::RenderContext()
-	: myShader(nullptr)
+	: myVertexShader(nullptr)
+	, myFragmentShader(nullptr)
 	, myVertexArrayID(0)
 	, myVertexBufferID(0)
 {
@@ -40,7 +41,8 @@ void RenderContext::PrintDebugInfo()
 
 void RenderContext::CompileShaders()
 {
-	myShader = &Shader("../../Data/Shaders/Red.glsl");
+	myVertexShader =  new Shader("../../Data/Shaders/RedVertexShader.glsl", ShaderType::Vertex);
+	myFragmentShader = new Shader("../../Data/Shaders/RedFragmentShader.glsl", ShaderType::Fragment);
 }
 
 void RenderContext::GenerateVertexArrayObject()
@@ -62,18 +64,16 @@ void RenderContext::Render(int aWidth, int aHeight)
 	glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (myShader)
-	{
-		myShader->Bind();
-	}
+	myVertexShader->Bind();
+	myFragmentShader->Bind();
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, myVertexBufferID);
 	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		0,                  // attribute 0
 		3,                  // size
 		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
+		GL_FALSE,           // normalized
 		0,                  // stride
 		(void*)0            // array buffer offset
 	);
