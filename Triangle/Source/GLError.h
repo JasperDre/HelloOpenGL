@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include <iostream>
+#include <cstdio>
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 
@@ -43,7 +43,7 @@ static inline void CheckGLError()
                 break;
         }
 
-        std::cout << "GL Error: " << errorString << std::endl;
+        printf("%s\n", errorString);
     }
 }
 

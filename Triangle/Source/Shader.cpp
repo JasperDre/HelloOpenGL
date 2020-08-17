@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -29,7 +28,7 @@ std::string Shader::ReadFile(const std::string& aPath)
 
     if (!sourceStream.is_open())
     {
-        std::cout << "Failed to read file " << aPath << std::endl;
+        printf("Failed to read file %s\n", aPath.c_str());
         return "";
     }
 
@@ -45,7 +44,7 @@ void Shader::Compile(const std::string& aShaderSource)
 {
     myID = glCreateShader(myType);
 
-    std::cout << "Compiling " << myName << std::endl;
+    printf("Compiling %s\n", myName.c_str());
 
     const GLchar* sourceCStr = aShaderSource.c_str();
     glShaderSource(myID, 1, &sourceCStr, nullptr);
@@ -66,7 +65,7 @@ void Shader::Compile(const std::string& aShaderSource)
         }
     }
 
-    std::cout << "Compiled " << myName << std::endl;
+    printf("Compiled %s\n", myName.c_str());
 }
 
 void Shader::SetUniformLocation(unsigned int aProgramID, std::string& aName, glm::vec4 aLocation)
