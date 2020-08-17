@@ -10,10 +10,9 @@ Shader::Shader(const std::string& aPath, ShaderType aType)
 {
     myPath = aPath;
     myName = GetNameFromPath(aPath);
-
-    std::string shaderSource = ReadFile(aPath);
     myType = GetShaderType(aType);
 
+    std::string shaderSource = ReadFile(aPath);
     Compile(shaderSource);
 }
 
@@ -110,9 +109,7 @@ void Shader::SetUniformLocation(std::string& aName, glm::vec4 aLocation)
 
 int Shader::GetUniformLocation(const std::string& aName)
 {
-    int location = glGetUniformLocation(myProgramID, aName.c_str());
-
-    return location;
+    return glGetUniformLocation(myProgramID, aName.c_str());
 }
 
 std::string Shader::GetNameFromPath(const std::string& aPath)
@@ -126,14 +123,13 @@ std::string Shader::GetNameFromPath(const std::string& aPath)
 
 unsigned int Shader::GetShaderType(ShaderType aType)
 {
-    if (aType == ShaderType::Vertex)
+    switch (aType)
     {
-        return GL_VERTEX_SHADER;
+        case ShaderType::Vertex:
+            return GL_VERTEX_SHADER;
+        case ShaderType::Fragment:
+            return GL_FRAGMENT_SHADER;
+        default:
+            return 0;
     }
-    else if (aType == ShaderType::Fragment)
-    {
-        return GL_FRAGMENT_SHADER;
-    }
-
-    return 0;
 }

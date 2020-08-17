@@ -41,7 +41,7 @@ void RenderContext::PrintDebugInfo()
 
 void RenderContext::CompileShaders()
 {
-	myVertexShader =  new Shader("../../Data/Shaders/RedVertexShader.glsl", ShaderType::Vertex);
+	myVertexShader = new Shader("../../Data/Shaders/RedVertexShader.glsl", ShaderType::Vertex);
 	myFragmentShader = new Shader("../../Data/Shaders/RedFragmentShader.glsl", ShaderType::Fragment);
 }
 
