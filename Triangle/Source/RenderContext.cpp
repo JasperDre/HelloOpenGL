@@ -40,7 +40,7 @@ void RenderContext::PrintDebugInfo()
 
 void RenderContext::CompileShaders()
 {
-	myShader = &Shader("../../Triangle/Data/Shaders/Red.glsl");
+	myShader = &Shader("../../Data/Shaders/Red.glsl");
 }
 
 void RenderContext::GenerateVertexArrayObject()
