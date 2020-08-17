@@ -28,6 +28,8 @@ Shader::Shader(const std::string& aFilepath)
     auto lastDot = aFilepath.rfind('.');
     auto count = lastDot == std::string::npos ? aFilepath.size() - lastSlash : lastDot - lastSlash;
     myName = aFilepath.substr(lastSlash, count);
+
+    std::cout << "Compiled " << myName << std::endl;
 }
 
 Shader::Shader(const std::string& aName, const std::string& aVertexSource, const std::string& aFragmentSource)
@@ -228,23 +230,22 @@ std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& aS
     while (pos != std::string::npos)
     {
         size_t eol = aSource.find_first_of("\r\n", pos); //End of shader type declaration line
-        if (eol != std::string::npos)
+        if (eol == std::string::npos)
         {
             std::cout << "Syntax error" << std::endl;
         }
 
-        std::cout << (eol != std::string::npos, "Syntax error");
         size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
         std::string type = aSource.substr(begin, eol - begin);
 
-        if (ShaderTypeFromString(type))
+        if (ShaderTypeFromString(type) == 0)
         {
             std::cout << "Invalid shader type specified" << std::endl;
         }
 
         size_t nextLinePos = aSource.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
 
-        if (nextLinePos != std::string::npos)
+        if (nextLinePos == std::string::npos)
         {
             std::cout << "Syntax error" << std::endl;
         }

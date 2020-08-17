@@ -1,4 +1,5 @@
 #include "RenderContext.h"
+#include "Shader.h"
 
 #include <glad/glad.h>
 
@@ -13,6 +14,8 @@ RenderContext::RenderContext()
 	}
 
 	PrintDebugInfo();
+
+	Shader shader("../../Triangle/Data/Shaders/FlatColor.glsl");
 }
 
 RenderContext::~RenderContext()
