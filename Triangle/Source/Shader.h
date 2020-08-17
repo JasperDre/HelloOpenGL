@@ -18,9 +18,7 @@ public:
 
     void SetUniformLocation(std::string& aName, glm::vec4 aLocation);
     int GetUniformLocation(const std::string& aName);
-    bool Compile(unsigned int aType, const std::string& aSource);
     void Compile(const std::unordered_map<GLenum, std::string>& aShaderSources);
-    unsigned int Create(const std::string& aVertexShader, const std::string aFragmentShader);
 
     std::string ReadFile(const std::string& aFilepath);
 

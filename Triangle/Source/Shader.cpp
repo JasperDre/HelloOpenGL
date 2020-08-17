@@ -35,7 +35,6 @@ Shader::Shader(const std::string& aFilepath)
 Shader::Shader(const std::string& aName, const std::string& aVertexSource, const std::string& aFragmentSource)
     : myName(aName)
 {
-
     std::unordered_map<GLenum, std::string> sources;
     sources[GL_VERTEX_SHADER] = aVertexSource;
     sources[GL_FRAGMENT_SHADER] = aFragmentSource;
@@ -67,30 +66,6 @@ int Shader::GetUniformLocation(const std::string& aName)
     int location = glGetUniformLocation(myRendererID, aName.c_str());
 
     return location;
-}
-
-bool Shader::Compile(unsigned int aType, const std::string& aSource)
-{
-    unsigned int id = glCreateShader(aType);
-    const char* source = aSource.c_str();
-    glShaderSource(id, 1, &source, nullptr);
-    glCompileShader(id);
-
-    int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, &length, message);
-        std::cout << "Failed to compile shader!" << std::endl;
-        glDeleteShader(id);
-
-        return 0;
-    }
-
-    return false;
 }
 
 void Shader::Compile(const std::unordered_map<GLenum, std::string>& aShaderSources)
@@ -175,21 +150,6 @@ void Shader::Compile(const std::unordered_map<GLenum, std::string>& aShaderSourc
         glDetachShader(program, id);
         glDeleteShader(id);
     }
-}
-
-unsigned int Shader::Create(const std::string& aVertexShader, const std::string aFragmentShader)
-{
-    unsigned int program = glCreateProgram();
-    unsigned int vertexShader = Compile(GL_VERTEX_SHADER, aVertexShader);
-    unsigned int fragmentShader = Compile(GL_FRAGMENT_SHADER, aFragmentShader);
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    glValidateProgram(program);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    return program;
 }
 
 std::string Shader::ReadFile(const std::string& aFilepath)
