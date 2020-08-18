@@ -13,8 +13,8 @@ ShaderLibrary::ShaderLibrary()
 {
 	myProgramID = glCreateProgram();
 
-    myVertexShader = new Shader("../../Data/Shaders/RedVertexShader.glsl", ShaderType::Vertex);
-    myFragmentShader = new Shader("../../Data/Shaders/RedFragmentShader.glsl", ShaderType::Fragment);
+    myVertexShader = new Shader("../../Data/Shaders/CubeVertexShader.glsl", ShaderType::Vertex);
+    myFragmentShader = new Shader("../../Data/Shaders/CubeFragmentShader.glsl", ShaderType::Fragment);
 
     AttachShaders(*myVertexShader, *myFragmentShader);
 }

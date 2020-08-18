@@ -1,6 +1,9 @@
 #pragma once
 
+#include <glm/mat4x4.hpp>
+
 class ShaderLibrary;
+class Camera;
 
 class RenderContext
 {
@@ -19,6 +22,8 @@ private:
 
 private:
 	ShaderLibrary* myShaderLibrary;
+	Camera* myCamera;
+	glm::mat4 myModel;
 	unsigned int myVertexArrayID;
 	unsigned int myVertexBufferID;
 };

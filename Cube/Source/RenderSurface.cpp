@@ -20,13 +20,15 @@ RenderSurface::RenderSurface()
 		return;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	myWindow = glfwCreateWindow(1240, 720, "Hello OpenGL", nullptr, nullptr);
+	myWindow = glfwCreateWindow(1240, 720, "Hello Cube", nullptr, nullptr);
 	if (!myWindow)
 	{
 		printf("Failed to open a GLFW window\n");

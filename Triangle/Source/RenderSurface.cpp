@@ -26,7 +26,7 @@ RenderSurface::RenderSurface()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	myWindow = glfwCreateWindow(1240, 720, "Hello OpenGL", nullptr, nullptr);
+	myWindow = glfwCreateWindow(1240, 720, "Hello Triangle", nullptr, nullptr);
 	if (!myWindow)
 	{
 		printf("Failed to open a GLFW window\n");

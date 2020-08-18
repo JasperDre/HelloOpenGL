@@ -10,6 +10,8 @@ public:
 
 	void BindShaders();
 
+	const unsigned int GetProgramID() const { return myProgramID; }
+
 private:
 	void AttachShaders(const Shader& aVertexShader, const Shader& aFragmentShader);
 
