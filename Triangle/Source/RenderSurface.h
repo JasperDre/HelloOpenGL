@@ -16,8 +16,6 @@ public:
 
 	static void ErrorCallback(int anError, const char* aDescription);
 
-	static void FrameBufferSizeCallback(GLFWwindow* aWindow, int aWidth, int aHeight);
-
 	static void KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode);
 
 	int GetScreenWidth() { return myWidth; }

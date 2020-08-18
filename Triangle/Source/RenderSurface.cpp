@@ -38,8 +38,6 @@ RenderSurface::RenderSurface()
 
 	glfwSetKeyCallback(myWindow, KeyCallback);
 
-	glfwSetFramebufferSizeCallback(myWindow, FrameBufferSizeCallback);
-
 	glfwSetInputMode(myWindow, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glfwSwapInterval(1);
@@ -85,11 +83,6 @@ void RenderSurface::Destroy()
 void RenderSurface::ErrorCallback(int anError, const char* aDescription)
 {
 	printf("%i %s\n", anError, aDescription);
-}
-
-void RenderSurface::FrameBufferSizeCallback(GLFWwindow* aWindow, int aWidth, int aHeight)
-{
-	//TODO glViewport(0, 0, aWidth, aHeight);
 }
 
 void RenderSurface::KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode)
