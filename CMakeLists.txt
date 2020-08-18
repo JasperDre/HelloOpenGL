@@ -5,4 +5,23 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(HelloOpenGL)
 
+set(DEP_DIR "${CMAKE_SOURCE_DIR}/Dependencies")
+
+# GLFW
+set(GLFW_DIR "${DEP_DIR}/GLFW")
+add_subdirectory("${GLFW_DIR}" GLFW)
+
+# GLAD
+set(GLAD_DIR "${DEP_DIR}/GLAD")
+set(GLAD_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/GLAD")
+add_subdirectory("${GLAD_DIR}" GLAD)
+
+# GLM
+set(GLM_DIR "${DEP_DIR}/GLM")
+
 add_subdirectory(Triangle)
+add_subdirectory(Cube)
+
+# Debugging
+message(STATUS "This is the BINARY directory " ${PROJECT_BINARY_DIR})
+message(STATUS "This is the SOURCE directory " ${PROJECT_SOURCE_DIR})
