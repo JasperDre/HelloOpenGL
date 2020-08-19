@@ -19,8 +19,15 @@ add_subdirectory("${GLAD_DIR}" GLAD)
 # GLM
 set(GLM_DIR "${DEP_DIR}/GLM")
 
+# STB
+set(STB_DIR "${DEP_DIR}/STB")
+
+# TINYOBJ
+set(TINYOBJ_DIR "${DEP_DIR}/TINYOBJ")
+
 add_subdirectory(Triangle)
 add_subdirectory(Cube)
+add_subdirectory(Model)
 
 # Debugging
 message(STATUS "This is the BINARY directory " ${PROJECT_BINARY_DIR})
