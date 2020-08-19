@@ -1,5 +1,6 @@
 #include "ShaderLibrary.h"
 #include "Shader.h"
+#include "GLError.h"
 
 #include <glad/glad.h>
 
@@ -48,6 +49,8 @@ void ShaderLibrary::AttachShaders(const Shader& aVertexShader, const Shader& aFr
     glDetachShader(myProgramID, fragmentShaderID);
     glDeleteShader(vertexShaderID);
     glDeleteShader(fragmentShaderID);
+
+    CheckGLError();
 }
 
 void ShaderLibrary::BindShaders()

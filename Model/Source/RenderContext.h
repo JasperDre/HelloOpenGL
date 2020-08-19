@@ -4,6 +4,7 @@
 
 class ShaderLibrary;
 class Camera;
+class Model;
 
 class RenderContext
 {
@@ -23,7 +24,7 @@ private:
 private:
 	ShaderLibrary* myShaderLibrary;
 	Camera* myCamera;
-	glm::mat4 myModel;
+	Model* myModel;
 	unsigned int myVertexArrayID;
 	unsigned int myVertexBufferID;
 };
