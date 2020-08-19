@@ -7,3 +7,9 @@
 [submodule "Dependencies/GLM"]
 	path = Dependencies/GLM
 	url = https://github.com/g-truc/glm.git
+[submodule "Dependencies/STB"]
+	path = Dependencies/STB
+	url = https://github.com/nothings/stb.git
+[submodule "Dependencies/TINYOBJ"]
+	path = Dependencies/TINYOBJ
+	url = https://github.com/tinyobjloader/tinyobjloader.git
