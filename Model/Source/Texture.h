@@ -8,8 +8,6 @@ public:
 	Texture(const std::string& aPath);
 	~Texture();
 
-	std::string ReadFile(const std::string& aPath);
-
 	const unsigned int GetID() const { return myID; }
 	const int GetWidth() const { return myWidth; }
 	const int GetHeight() const { return myHeight; }

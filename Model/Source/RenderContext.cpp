@@ -12,8 +12,6 @@ RenderContext::RenderContext()
 	: myShaderLibrary(nullptr)
 	, myCamera(nullptr)
 	, myModel(nullptr)
-	, myVertexArrayID(0)
-	, myVertexBufferID(0)
 {
 	if (!gladLoadGL())
 	{
@@ -22,18 +20,8 @@ RenderContext::RenderContext()
 	}
 
 	PrintDebugInfo();
-
-	myModel = new Model("../../Data/Models/Cube/Cube.obj");
-	const std::vector<std::string> textureReferences = myModel->GetTextureReferences();
-	for (size_t i = 0; i < textureReferences.size(); i++)
-	{
-		Texture* texture = new Texture(textureReferences[i]);
-	}
-
-	CompileShaders();
-	GenerateVertexArrayObject();
-	GenerateVertexBufferObject();
-	BindBuffer();
+	LoadModels();
+	LoadShaders();
 
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -47,15 +35,13 @@ RenderContext::RenderContext()
 
 	CheckGLError();
 
-	myCamera = new Camera();
-	myCamera->myProjection = glm::perspective(glm::radians(45.0f), 1240.0f / 720.0f, 0.1f, 100.0f);
-	myCamera->myView = glm::lookAt(glm::vec3(4, 3, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	CreateCamera();
 }
 
 RenderContext::~RenderContext()
 {
-	glDeleteVertexArrays(1, &myVertexArrayID);
-	glDeleteBuffers(1, &myVertexBufferID);
+	glDeleteVertexArrays(1, &myModel->myVertexArrayObject);
+	glDeleteBuffers(1, &myModel->myVertexBufferObject);
 }
 
 void RenderContext::PrintDebugInfo()
@@ -64,37 +50,43 @@ void RenderContext::PrintDebugInfo()
 	printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 }
 
-void RenderContext::CompileShaders()
+void RenderContext::LoadModels()
 {
-	myShaderLibrary = new ShaderLibrary();
-}
+	myModel = new Model("../../Data/Models/Cube/Cube.obj");
 
-void RenderContext::GenerateVertexArrayObject()
-{
-	glGenVertexArrays(1, &myVertexArrayID);
-	glBindVertexArray(myVertexArrayID);
+	glGenVertexArrays(1, &myModel->myVertexArrayObject);
+	glBindVertexArray(myModel->myVertexArrayObject);
 
-	CheckGLError();
-}
+	glGenBuffers(1, &myModel->myVertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, myModel->myVertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, (myModel->GetMeshes()[0].myVertices.size()) * sizeof(Vertex), &myModel->GetMeshes()[0].myVertices.at(0), GL_STATIC_DRAW);
 
-void RenderContext::GenerateVertexBufferObject()
-{
-	glGenBuffers(1, &myVertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, myVertexBufferID);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, myModel->vbos.size() * sizeof(float), &myModel->vbos.at(0), GL_STATIC_DRAW);
-
-	CheckGLError();
-}
-
-void RenderContext::BindBuffer()
-{
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), NULL);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_TRUE, 5 * sizeof(GLfloat), (const GLvoid*)(3 * sizeof(GLfloat)));
+
 	glBindVertexArray(0);
 
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3 + 3 + 2 + 2) * sizeof(float), (const void*)0);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (3 + 3 + 2 + 2) * sizeof(float), (const void*)(sizeof(float) * 6));
+
 	CheckGLError();
+}
+
+void RenderContext::LoadShaders()
+{
+	myShaderLibrary = new ShaderLibrary();
+
+	CheckGLError();
+}
+
+void RenderContext::CreateCamera()
+{
+	myCamera = new Camera();
+	myCamera->myProjection = glm::perspective(glm::radians(45.0f), 1240.0f / 720.0f, 0.1f, 100.0f);
+	myCamera->myView = glm::lookAt(glm::vec3(4, 3, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 }
 
 void RenderContext::Render(int aWidth, int aHeight)
@@ -111,7 +103,13 @@ void RenderContext::Render(int aWidth, int aHeight)
 	glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindVertexArray(myVertexArrayID);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, myModel->GetTextures()[0]->GetID());
 
-	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+	glBindVertexArray(myModel->myVertexArrayObject);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
+
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

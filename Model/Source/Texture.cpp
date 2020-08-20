@@ -12,16 +12,14 @@ Texture::Texture(const std::string& aPath)
 	, myWidth(0)
 	, myHeight(0)
 {
-	const std::string source = ReadFile(aPath);
-	if (source.empty())
-		return;
-
-	unsigned char* image = stbi_load(source.c_str(), &myWidth, &myHeight, &myComponents, STBI_default);
+	unsigned char* image = stbi_load(aPath.c_str(), &myWidth, &myHeight, &myComponents, STBI_default);
 	if (!image)
 	{
-		printf("Failed to load texture: %s", source.c_str());
+		printf("Failed to load texture: %s\n", aPath.c_str());
 		return;
 	}
+
+	printf("Loaded %s\n", aPath.c_str());
 
 	glGenTextures(1, &myID);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -45,23 +43,4 @@ Texture::Texture(const std::string& aPath)
 
 Texture::~Texture()
 {
-}
-
-std::string Texture::ReadFile(const std::string& aPath)
-{
-	std::string sourceResult;
-	std::ifstream sourceStream(aPath, std::ios::in);
-
-	if (!sourceStream.is_open())
-	{
-		printf("Failed to read file %s\n", aPath.c_str());
-		return "";
-	}
-
-	std::stringstream sourceStringStream;
-	sourceStringStream << sourceStream.rdbuf();
-	sourceResult = sourceStringStream.str();
-	sourceStream.close();
-
-	return sourceResult;
 }

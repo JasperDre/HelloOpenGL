@@ -16,15 +16,12 @@ public:
 
 private:
 	void PrintDebugInfo();
-	void CompileShaders();
-	void GenerateVertexArrayObject();
-	void GenerateVertexBufferObject();
-	void BindBuffer();
+	void LoadModels();
+	void LoadShaders();
+	void CreateCamera();
 
 private:
 	ShaderLibrary* myShaderLibrary;
 	Camera* myCamera;
 	Model* myModel;
-	unsigned int myVertexArrayID;
-	unsigned int myVertexBufferID;
 };
