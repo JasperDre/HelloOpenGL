@@ -1,6 +1,5 @@
 #include "Model.h"
 #include "GLError.h"
-#include "Texture.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -13,21 +12,43 @@ Model::Model(const std::string aPath)
     , myVertexArrayObject(0)
     , myVertexBufferObject(0)
 {
-	tinyobj::attrib_t attributes;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-
-	std::string warning;
-	std::string error;
-
     printf("Loading %s\n", aPath.c_str());
-    std::size_t found = aPath.find_last_of("/\\");
-    std::string baseDirectory = aPath.substr(0, found + 1);
-    if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, aPath.c_str(), baseDirectory.c_str(), true))
-	{
-		printf("Failed to load model: %s\n", aPath.c_str());
-		return;
-	}
+
+    std::size_t lastSlashIndex = aPath.find_last_of("/\\");
+    std::size_t lastDotIndex = aPath.find_last_of(".");
+    std::string baseDirectory = aPath.substr(0, lastSlashIndex + 1);
+    std::string file = aPath.substr(lastSlashIndex + 1, aPath.length() - lastDotIndex);
+    std::string extension = aPath.substr(lastDotIndex + 1, aPath.length());
+
+    if (extension == "obj")
+    {
+        LoadOBJ(aPath, baseDirectory);
+    }
+    else if (extension == "fbx")
+    {
+        LoadFBX(aPath);
+    }
+}
+
+Model::~Model()
+{
+    myMeshes.clear();
+}
+
+void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
+{
+    tinyobj::attrib_t attributes;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+
+    std::string warning;
+    std::string error;
+
+    if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, aPath.c_str(), aBaseDirectory.c_str(), true))
+    {
+        printf("Failed to load model: %s\n", aPath.c_str());
+        return;
+    }
 
     if (!warning.empty())
     {
@@ -82,7 +103,6 @@ Model::Model(const std::string aPath)
     }
 }
 
-Model::~Model()
+void Model::LoadFBX(const std::string aPath)
 {
-    myMeshes.clear();
 }

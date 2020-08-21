@@ -6,8 +6,6 @@
 #include <vector>
 #include <string>
 
-class Texture;
-
 struct Vertex
 {
 	float myPosition[3];
@@ -28,6 +26,10 @@ public:
 	const std::vector<Mesh>& GetMeshes() const { return myMeshes; }
 	const glm::mat4 GetModelMatrix() const { return myModelMatrix; }
 	const glm::vec3 GetPosition() const { return myPosition; }
+
+private:
+	void LoadOBJ(const std::string aPath, const std::string aBaseDirectory);
+	void LoadFBX(const std::string aPath);
 
 public:
 	unsigned int myVertexArrayObject;
