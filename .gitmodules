@@ -13,3 +13,6 @@
 [submodule "Dependencies/TINYOBJ"]
 	path = Dependencies/TINYOBJ
 	url = https://github.com/tinyobjloader/tinyobjloader.git
+[submodule "Dependencies/ASSIMP"]
+	path = Dependencies/ASSIMP
+	url = https://github.com/assimp/assimp.git
