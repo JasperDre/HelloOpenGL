@@ -2,15 +2,16 @@ cmake_minimum_required(VERSION 3.9)
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 project(HelloOpenGL)
 
 set(DEP_DIR "${CMAKE_SOURCE_DIR}/Dependencies")
 
 # GLFW
-option(GLFW_BUILD_DOCS OFF)
-option(GLFW_BUILD_EXAMPLES OFF)
-option(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "Generate docs" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Generate examples" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "Generate tests" FORCE)
 set(GLFW_DIR "${DEP_DIR}/GLFW")
 add_subdirectory("${GLFW_DIR}" GLFW)
 
@@ -30,9 +31,9 @@ set(TINYOBJ_DIR "${DEP_DIR}/TINYOBJ")
 
 # ASSIMP
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Build tools" FORCE)
-set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Build tools" FORCE)
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Build tools" FORCE)
-set(ASSIMP_NO_EXPORT OFF CACHE BOOL "Build tools" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Build samples" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "Build tests" FORCE)
+set(ASSIMP_NO_EXPORT OFF CACHE BOOL "Export objects" FORCE)
 set(ASSIMP_DIR "${DEP_DIR}/ASSIMP")
 add_subdirectory("${ASSIMP_DIR}" ASSIMP)
 
