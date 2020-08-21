@@ -16,7 +16,7 @@ public:
 
 private:
 	void PrintDebugInfo();
-	void LoadModels();
+	void LoadModel();
 	void LoadShaders();
 	void CreateCamera();
 

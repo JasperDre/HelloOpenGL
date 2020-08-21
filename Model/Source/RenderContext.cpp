@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include <cstddef>
+
 RenderContext::RenderContext()
 	: myShaderLibrary(nullptr)
 	, myCamera(nullptr)
@@ -20,7 +22,7 @@ RenderContext::RenderContext()
 	}
 
 	PrintDebugInfo();
-	LoadModels();
+	LoadModel();
 	LoadShaders();
 
 	glEnable(GL_DEBUG_OUTPUT);
@@ -33,6 +35,8 @@ RenderContext::RenderContext()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	CheckGLError();
 
 	CreateCamera();
@@ -40,6 +44,7 @@ RenderContext::RenderContext()
 
 RenderContext::~RenderContext()
 {
+	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &myModel->myVertexArrayObject);
 	glDeleteBuffers(1, &myModel->myVertexBufferObject);
 }
@@ -50,7 +55,7 @@ void RenderContext::PrintDebugInfo()
 	printf("GLSL %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 }
 
-void RenderContext::LoadModels()
+void RenderContext::LoadModel()
 {
 	myModel = new Model("../../Data/Models/Cube/Cube.obj");
 
@@ -59,18 +64,12 @@ void RenderContext::LoadModels()
 
 	glGenBuffers(1, &myModel->myVertexBufferObject);
 	glBindBuffer(GL_ARRAY_BUFFER, myModel->myVertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, (myModel->GetMeshes()[0].myVertices.size()) * sizeof(Vertex), &myModel->GetMeshes()[0].myVertices.at(0), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, myModel->GetMeshes()[0].myVertices.size() * sizeof(Vertex), &myModel->GetMeshes()[0].myVertices.front(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), NULL);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_TRUE, 5 * sizeof(GLfloat), (const GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, myPosition));
 
 	glBindVertexArray(0);
-
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3 + 3 + 2 + 2) * sizeof(float), (const void*)0);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (3 + 3 + 2 + 2) * sizeof(float), (const void*)(sizeof(float) * 6));
 
 	CheckGLError();
 }
@@ -103,13 +102,9 @@ void RenderContext::Render(int aWidth, int aHeight)
 	glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, myModel->GetTextures()[0]->GetID());
-
 	glBindVertexArray(myModel->myVertexArrayObject);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
 
 	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
