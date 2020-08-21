@@ -4,6 +4,10 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include <algorithm>
 
 Model::Model(const std::string aPath)
@@ -12,6 +16,12 @@ Model::Model(const std::string aPath)
     , myVertexArrayObject(0)
     , myVertexBufferObject(0)
 {
+    if (!DoesFileExist(aPath))
+    {
+        printf("%s does not exist\n", aPath.c_str());
+        return;
+    }
+
     printf("Loading %s\n", aPath.c_str());
 
     std::size_t lastSlashIndex = aPath.find_last_of("/\\");
@@ -35,6 +45,18 @@ Model::~Model()
     myMeshes.clear();
 }
 
+bool Model::DoesFileExist(const std::string& aPath)
+{
+    FILE* file;
+    errno_t error = fopen_s(&file, aPath.c_str(), "rb");
+    if (error != 0)
+    {
+        return false;
+    }
+    
+    return true;
+}
+
 void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 {
     tinyobj::attrib_t attributes;
@@ -46,7 +68,7 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
     if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, aPath.c_str(), aBaseDirectory.c_str(), true))
     {
-        printf("Failed to load model: %s\n", aPath.c_str());
+        printf("Failed to parse %s\n", aPath.c_str());
         return;
     }
 
@@ -105,4 +127,49 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
 void Model::LoadFBX(const std::string aPath)
 {
+    Assimp::Importer importer;
+
+    const aiScene* scene = importer.ReadFile(aPath.c_str(), aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+
+    if (!scene)
+    {
+        printf("Failed to parse %s %s\n", aPath.c_str(), importer.GetErrorString());
+        return;
+    }
+
+    for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++)
+    {
+        const aiMesh* aiMesh = scene->mMeshes[meshIndex];
+
+        Mesh mesh;
+        mesh.myVertices.resize(aiMesh->mNumVertices);
+
+        for (unsigned int vertexIndex = 0; vertexIndex < aiMesh->mNumVertices; vertexIndex++)
+        {
+            const aiVector3D zero3D(0.0f, 0.0f, 0.0f);
+            const aiVector3D* position = &(aiMesh->mVertices[vertexIndex]);
+            const aiVector3D* normal = aiMesh->mNormals ? &(aiMesh->mNormals[vertexIndex]) : &zero3D;
+
+            Vertex vertex;
+            vertex.myPosition[0] = static_cast<float>(position->x);
+            vertex.myPosition[1] = static_cast<float>(position->y);
+            vertex.myPosition[2] = static_cast<float>(position->z);
+
+            vertex.myNormal[0] = static_cast<float>(normal->x);
+            vertex.myNormal[1] = static_cast<float>(normal->y);
+            vertex.myNormal[2] = static_cast<float>(normal->z);
+
+            mesh.myVertices.push_back(vertex);
+        }
+
+        myMeshes.push_back(mesh);
+    }
+    
+    printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
+
+    if (myMeshes.size() > 0)
+    {
+        printf("Number of vertices %i\n", static_cast<int>(myMeshes[0].myVertices.size()));
+        printf("Loaded %s\n", aPath.c_str());
+    }
 }

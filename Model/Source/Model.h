@@ -28,6 +28,7 @@ public:
 	const glm::vec3 GetPosition() const { return myPosition; }
 
 private:
+	bool DoesFileExist(const std::string& aPath);
 	void LoadOBJ(const std::string aPath, const std::string aBaseDirectory);
 	void LoadFBX(const std::string aPath);
 

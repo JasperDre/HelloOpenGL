@@ -57,7 +57,10 @@ void RenderContext::PrintDebugInfo()
 
 void RenderContext::LoadModel()
 {
-	myModel = new Model("../../Data/Models/Cube/Cube.obj");
+	myModel = new Model("../../Data/Models/Cube/Cube.fbx");
+
+	if (myModel->GetMeshes().size() < 1)
+		return;
 
 	glGenVertexArrays(1, &myModel->myVertexArrayObject);
 	glBindVertexArray(myModel->myVertexArrayObject);
@@ -101,6 +104,9 @@ void RenderContext::Render(int aWidth, int aHeight)
 	glViewport(0, 0, aWidth, aHeight);
 	glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (myModel->GetMeshes().size() < 1)
+		return;
 
 	glBindVertexArray(myModel->myVertexArrayObject);
 
