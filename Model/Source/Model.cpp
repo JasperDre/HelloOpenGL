@@ -129,8 +129,13 @@ void Model::LoadFBX(const std::string aPath)
 {
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(aPath.c_str(), aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+    unsigned int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals;
+    if (!importer.ValidateFlags(flags))
+    {
+        printf("Flags are incompatible\n");
+    }
 
+    const aiScene* scene = importer.ReadFile(aPath.c_str(), flags);
     if (!scene)
     {
         printf("Failed to parse %s %s\n", aPath.c_str(), importer.GetErrorString());
