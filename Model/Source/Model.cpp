@@ -84,15 +84,16 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
     printf("Number of shapes %i\n", static_cast<int>(shapes.size()));
 
-    for (size_t shapeIndex = 0; shapeIndex < shapes.size(); shapeIndex++)
+    for (int shapeIndex = 0; shapeIndex < shapes.size(); ++shapeIndex)
     {
         Mesh mesh;
-        size_t indexOffset = 0;
+        int indexOffset = 0;
 
-        for (size_t faceIndex = 0; faceIndex < shapes[shapeIndex].mesh.num_face_vertices.size(); faceIndex++)
+        for (int faceIndex = 0; faceIndex < shapes[shapeIndex].mesh.num_face_vertices.size(); ++faceIndex)
         {
             int numberOfVertices = shapes[shapeIndex].mesh.num_face_vertices[faceIndex];
-            for (size_t vertexIndex = 0; vertexIndex < numberOfVertices; vertexIndex++)
+
+            for (int vertexIndex = 0; vertexIndex < numberOfVertices; ++vertexIndex)
             {
                 Vertex vertex;
                 tinyobj::index_t index = shapes[shapeIndex].mesh.indices[indexOffset + vertexIndex];
@@ -105,6 +106,12 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
                     vertex.myNormal[0] = attributes.normals[3 * index.normal_index + 0];
                     vertex.myNormal[1] = attributes.normals[3 * index.normal_index + 1];
                     vertex.myNormal[2] = attributes.normals[3 * index.normal_index + 2];
+                }
+
+                if (attributes.texcoords.size() > 0)
+                {
+                    vertex.myTextureCoordinates[0] = attributes.texcoords[2 * index.texcoord_index + 0];
+                    vertex.myTextureCoordinates[1] = attributes.texcoords[2 * index.texcoord_index + 1];
                 }
 
                 mesh.myVertices.push_back(vertex);
@@ -129,7 +136,7 @@ void Model::LoadFBX(const std::string aPath)
 {
     Assimp::Importer importer;
 
-    unsigned int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals;
+    unsigned int flags = aiProcess_Triangulate;
     if (!importer.ValidateFlags(flags))
     {
         printf("Flags are incompatible\n");
@@ -142,29 +149,38 @@ void Model::LoadFBX(const std::string aPath)
         return;
     }
 
-    for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++)
+    for (int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
     {
         const aiMesh* aiMesh = scene->mMeshes[meshIndex];
-
         Mesh mesh;
-        mesh.myVertices.resize(aiMesh->mNumVertices);
 
-        for (unsigned int vertexIndex = 0; vertexIndex < aiMesh->mNumVertices; vertexIndex++)
+        for (int faceIndex = 0; faceIndex < aiMesh->mNumFaces; ++faceIndex)
         {
-            const aiVector3D zero3D(0.0f, 0.0f, 0.0f);
-            const aiVector3D* position = &(aiMesh->mVertices[vertexIndex]);
-            const aiVector3D* normal = aiMesh->mNormals ? &(aiMesh->mNormals[vertexIndex]) : &zero3D;
+            const aiFace& face = aiMesh->mFaces[faceIndex];
 
-            Vertex vertex;
-            vertex.myPosition[0] = static_cast<float>(position->x);
-            vertex.myPosition[1] = static_cast<float>(position->y);
-            vertex.myPosition[2] = static_cast<float>(position->z);
+            for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+            {
+                const aiVector3D zero3D(0.0f, 0.0f, 0.0f);
+                const aiVector3D* position = &(aiMesh->mVertices[face.mIndices[vertexIndex]]);
+                const aiVector3D* normal = aiMesh->mNormals ? &(aiMesh->mNormals[face.mIndices[vertexIndex]]) : &zero3D;
 
-            vertex.myNormal[0] = static_cast<float>(normal->x);
-            vertex.myNormal[1] = static_cast<float>(normal->y);
-            vertex.myNormal[2] = static_cast<float>(normal->z);
+                Vertex vertex;
+                vertex.myPosition[0] = static_cast<float>(position->x);
+                vertex.myPosition[1] = static_cast<float>(position->y);
+                vertex.myPosition[2] = static_cast<float>(position->z);
 
-            mesh.myVertices.push_back(vertex);
+                vertex.myNormal[0] = static_cast<float>(normal->x);
+                vertex.myNormal[1] = static_cast<float>(normal->y);
+                vertex.myNormal[2] = static_cast<float>(normal->z);
+
+                if (aiMesh->HasTextureCoords(0))
+                {
+                    vertex.myTextureCoordinates[0] = aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].x;
+                    vertex.myTextureCoordinates[1] = aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].y;
+                }
+
+                mesh.myVertices.push_back(vertex);
+            }
         }
 
         myMeshes.push_back(mesh);

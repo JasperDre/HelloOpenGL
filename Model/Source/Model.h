@@ -10,6 +10,7 @@ struct Vertex
 {
 	float myPosition[3];
 	float myNormal[3];
+	float myTextureCoordinates[2];
 };
 
 struct Mesh
