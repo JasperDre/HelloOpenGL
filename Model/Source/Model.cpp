@@ -23,8 +23,6 @@ Model::Model(const std::string aPath)
         return;
     }
 
-    printf("Loading %s\n", aPath.c_str());
-
     std::size_t lastSlashIndex = aPath.find_last_of("/\\");
     std::size_t lastDotIndex = aPath.find_last_of(".");
     std::string baseDirectory = aPath.substr(0, lastSlashIndex + 1);
@@ -69,7 +67,7 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
     if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warning, &error, aPath.c_str(), aBaseDirectory.c_str(), true))
     {
-        printf("Failed to parse %s\n", aPath.c_str());
+        printf("Failed to load %s\n", aPath.c_str());
         return;
     }
 
@@ -82,8 +80,6 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
     {
         printf("%s\n", error.c_str());
     }
-
-    printf("Number of shapes %i\n", static_cast<int>(shapes.size()));
 
     for (int shapeIndex = 0; shapeIndex < shapes.size(); ++shapeIndex)
     {
@@ -124,8 +120,6 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
         myMeshes.push_back(mesh);
     }
 
-    printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
-
     for (int materialIndex = 0; materialIndex < materials.size(); ++materialIndex)
     {
         tinyobj::material_t* material = &materials[materialIndex];
@@ -143,10 +137,14 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
         }
     }
 
-    if (myMeshes.size() > 0)
+    printf("Loaded %s\n", aPath.c_str());
+    printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
+    printf("Number of materials %i\n", static_cast<int>(materials.size()));
+    printf("Number of textures %i\n", static_cast<int>(myTextures.size()));
+
+    for (int meshIndex = 0; meshIndex < myMeshes.size(); ++meshIndex)
     {
-        printf("Number of vertices %i\n", static_cast<int>(myMeshes[0].myVertices.size()));
-        printf("Loaded %s\n", aPath.c_str());
+        printf("Number of vertices %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size()), meshIndex);
     }
 }
 
@@ -163,16 +161,16 @@ void Model::LoadFBX(const std::string aPath)
     const aiScene* scene = importer.ReadFile(aPath.c_str(), flags);
     if (!scene)
     {
-        printf("Failed to parse %s %s\n", aPath.c_str(), importer.GetErrorString());
+        printf("Failed to load %s %s\n", aPath.c_str(), importer.GetErrorString());
         return;
     }
 
-    for (int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
+    for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
     {
         const aiMesh* aiMesh = scene->mMeshes[meshIndex];
         Mesh mesh;
 
-        for (int faceIndex = 0; faceIndex < aiMesh->mNumFaces; ++faceIndex)
+        for (unsigned int faceIndex = 0; faceIndex < aiMesh->mNumFaces; ++faceIndex)
         {
             const aiFace& face = aiMesh->mFaces[faceIndex];
 
@@ -203,12 +201,10 @@ void Model::LoadFBX(const std::string aPath)
 
         myMeshes.push_back(mesh);
     }
-    
-    printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
 
     if (scene->HasMaterials())
     {
-        for (int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
+        for (unsigned int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
         {
             const aiMaterial* material = scene->mMaterials[materialIndex];
             aiString texturePath;
@@ -228,9 +224,13 @@ void Model::LoadFBX(const std::string aPath)
         }
     }
 
-    if (myMeshes.size() > 0)
+    printf("Loaded %s\n", aPath.c_str());
+    printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
+    printf("Number of materials %i\n", static_cast<int>(scene->mNumMaterials));
+    printf("Number of textures %i\n", static_cast<int>(myTextures.size()));
+
+    for (int meshIndex = 0; meshIndex < myMeshes.size(); ++meshIndex)
     {
-        printf("Number of vertices %i\n", static_cast<int>(myMeshes[0].myVertices.size()));
-        printf("Loaded %s\n", aPath.c_str());
+        printf("Number of vertices %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size()), meshIndex);
     }
 }
