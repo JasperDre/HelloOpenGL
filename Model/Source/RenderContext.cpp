@@ -57,7 +57,7 @@ void RenderContext::PrintDebugInfo()
 
 void RenderContext::LoadModel()
 {
-	myModel = new Model("../../Data/Models/Cube/Cube.obj");
+	myModel = new Model("../../Data/Models/Crate/Crate.obj");
 
 	if (myModel->GetMeshes().size() < 1)
 		return;
@@ -72,13 +72,8 @@ void RenderContext::LoadModel()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myPosition));
 
-	glGenBuffers(1, &myModel->myColorBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, myModel->myColorBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, myModel->GetMeshes()[0].myVertices.size() * sizeof(Vertex), &myModel->GetMeshes()[0].myVertices.front(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, myModel->myColorBufferObject);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myTextureCoordinates));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myTextureCoordinates));
 
 	glBindVertexArray(0);
 
@@ -116,10 +111,13 @@ void RenderContext::Render(int aWidth, int aHeight)
 	if (myModel->GetMeshes().size() < 1)
 		return;
 
-	glBindVertexArray(myModel->myVertexArrayObject);
-
 	if (myModel->GetTextures().size() > 0)
+	{
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, myModel->GetTextures()[0]->GetID());
+	}
+
+	glBindVertexArray(myModel->myVertexArrayObject);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
 
