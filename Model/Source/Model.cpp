@@ -86,14 +86,16 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
         Mesh mesh;
         int indexOffset = 0;
 
-        for (int faceIndex = 0; faceIndex < shapes[shapeIndex].mesh.num_face_vertices.size(); ++faceIndex)
+        const tinyobj::shape_t& shape = shapes[shapeIndex];
+
+        for (int faceIndex = 0; faceIndex < shape.mesh.num_face_vertices.size(); ++faceIndex)
         {
-            int numberOfVertices = shapes[shapeIndex].mesh.num_face_vertices[faceIndex];
+            int numberOfVertices = shape.mesh.num_face_vertices[faceIndex];
 
             for (int vertexIndex = 0; vertexIndex < numberOfVertices; ++vertexIndex)
             {
                 Vertex vertex;
-                tinyobj::index_t index = shapes[shapeIndex].mesh.indices[indexOffset + vertexIndex];
+                tinyobj::index_t index = shape.mesh.indices[indexOffset + vertexIndex];
                 vertex.myPosition[0] = attributes.vertices[3 * index.vertex_index + 0];
                 vertex.myPosition[1] = attributes.vertices[3 * index.vertex_index + 1];
                 vertex.myPosition[2] = attributes.vertices[3 * index.vertex_index + 2];
@@ -122,19 +124,18 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
     for (int materialIndex = 0; materialIndex < materials.size(); ++materialIndex)
     {
-        tinyobj::material_t* material = &materials[materialIndex];
+        const tinyobj::material_t& material = materials[materialIndex];
 
-        if (material->diffuse_texname.length() > 0)
-        {
-            std::string texturePath = aBaseDirectory + material->diffuse_texname;
-            if (!DoesFileExist(texturePath))
-            {
-                break;
-            }
+        if (!material.diffuse_texname.length())
+            break;
 
-            Texture* texture = new Texture(texturePath);
-            myTextures.push_back(texture);
-        }
+        std::string texturePath = aBaseDirectory + material.diffuse_texname;
+
+        if (!DoesFileExist(texturePath))
+            break;
+
+        Texture* texture = new Texture(texturePath);
+        myTextures.push_back(texture);
     }
 
     printf("Loaded %s\n", aPath.c_str());
@@ -210,18 +211,14 @@ void Model::LoadFBX(const std::string aPath)
             const aiMaterial* material = scene->mMaterials[materialIndex];
             aiString texturePath;
 
-            unsigned int numberOfTextures = material->GetTextureCount(aiTextureType_DIFFUSE);
+            if (!material->GetTextureCount(aiTextureType_DIFFUSE) || material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) != AI_SUCCESS)
+                break;
 
-            if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0 && material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
-            {
-                if (!DoesFileExist(texturePath.C_Str()))
-                {
-                    break;
-                }
+            if (!DoesFileExist(texturePath.C_Str()))
+                break;
 
-                Texture* texture = new Texture(texturePath.C_Str());
-                myTextures.push_back(texture);
-            }
+            Texture* texture = new Texture(texturePath.C_Str());
+            myTextures.push_back(texture);
         }
     }
 

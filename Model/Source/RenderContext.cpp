@@ -59,7 +59,7 @@ void RenderContext::LoadModel()
 {
 	myModel = new Model("../../Data/Models/Crate/Crate.obj");
 
-	if (myModel->GetMeshes().size() < 1)
+	if (!myModel->GetMeshes().size())
 		return;
 
 	glGenVertexArrays(1, &myModel->myVertexArrayObject);
@@ -108,10 +108,10 @@ void RenderContext::Render(int aWidth, int aHeight)
 	glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (myModel->GetMeshes().size() < 1)
+	if (!myModel->GetMeshes().size())
 		return;
 
-	if (myModel->GetTextures().size() > 0)
+	if (myModel->GetTextures().size())
 	{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, myModel->GetTextures()[0]->GetID());
