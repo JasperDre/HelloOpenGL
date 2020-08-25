@@ -145,6 +145,7 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
     for (int meshIndex = 0; meshIndex < myMeshes.size(); ++meshIndex)
     {
         printf("Number of vertices %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size()), meshIndex);
+        printf("Number of triangles %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size() / 3), meshIndex);
     }
 }
 
@@ -232,5 +233,6 @@ void Model::LoadFBX(const std::string aPath)
     for (int meshIndex = 0; meshIndex < myMeshes.size(); ++meshIndex)
     {
         printf("Number of vertices %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size()), meshIndex);
+        printf("Number of triangles %i in mesh %i\n", static_cast<int>(myMeshes[meshIndex].myVertices.size() / 3), meshIndex);
     }
 }
