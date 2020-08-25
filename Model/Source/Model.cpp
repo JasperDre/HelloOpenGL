@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "GLError.h"
+#include "Texture.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -125,6 +126,23 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
 
     printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
 
+    for (int materialIndex = 0; materialIndex < materials.size(); ++materialIndex)
+    {
+        tinyobj::material_t* material = &materials[materialIndex];
+
+        if (material->diffuse_texname.length() > 0)
+        {
+            std::string texturePath = aBaseDirectory + material->diffuse_texname;
+            if (!DoesFileExist(texturePath))
+            {
+                break;
+            }
+
+            Texture* texture = new Texture(texturePath);
+            myTextures.push_back(texture);
+        }
+    }
+
     if (myMeshes.size() > 0)
     {
         printf("Number of vertices %i\n", static_cast<int>(myMeshes[0].myVertices.size()));
@@ -187,6 +205,28 @@ void Model::LoadFBX(const std::string aPath)
     }
     
     printf("Number of meshes %i\n", static_cast<int>(myMeshes.size()));
+
+    if (scene->HasMaterials())
+    {
+        for (int materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
+        {
+            const aiMaterial* material = scene->mMaterials[materialIndex];
+            aiString texturePath;
+
+            unsigned int numberOfTextures = material->GetTextureCount(aiTextureType_DIFFUSE);
+
+            if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0 && material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
+            {
+                if (!DoesFileExist(texturePath.C_Str()))
+                {
+                    break;
+                }
+
+                Texture* texture = new Texture(texturePath.C_Str());
+                myTextures.push_back(texture);
+            }
+        }
+    }
 
     if (myMeshes.size() > 0)
     {
