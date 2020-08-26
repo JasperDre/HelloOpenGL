@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 17)
+set_property(GLOBAL PROPERTY CXX_STANDARD 20)
+set_property(GLOBAL PROPERTY CMAKE_CXX_STANDARD_REQUIRED ON)
+set_property(GLOBAL PROPERTY CMAKE_CXX_EXTENSIONS OFF)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 project(HelloOpenGL)
@@ -40,6 +42,7 @@ add_subdirectory("${ASSIMP_DIR}" ASSIMP)
 add_subdirectory(Triangle)
 add_subdirectory(Cube)
 add_subdirectory(Model)
+add_subdirectory(Indices)
 
 # Debugging
 message(STATUS "This is the BINARY directory " ${PROJECT_BINARY_DIR})
