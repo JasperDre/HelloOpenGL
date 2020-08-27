@@ -8,6 +8,8 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
 
 add_executable(Cube ${SRC})
 
+target_compile_options(Cube PRIVATE /W4)
+
 target_include_directories(Cube PRIVATE "${GLFW_DIR}/include")
 target_link_libraries(Cube "glfw")
 

@@ -8,6 +8,8 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
 
 add_executable(Model ${SRC})
 
+target_compile_options(Model PRIVATE /W4)
+
 target_include_directories(Model PRIVATE "${GLFW_DIR}/include")
 target_link_libraries(Model "glfw")
 

@@ -87,7 +87,7 @@ void RenderSurface::ErrorCallback(int anError, const char* aDescription)
 	printf("%i %s\n", anError, aDescription);
 }
 
-void RenderSurface::KeyCallback(GLFWwindow* aWindow, int aKey, int aScancode, int anAction, int aMode)
+void RenderSurface::KeyCallback(GLFWwindow* aWindow, int aKey, int /*aScancode*/, int anAction, int /*aMode*/)
 {
 	if (aKey == GLFW_KEY_ESCAPE && anAction == GLFW_PRESS)
 		glfwSetWindowShouldClose(aWindow, GL_TRUE);

@@ -8,6 +8,8 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
 
 add_executable(Indices ${SRC})
 
+target_compile_options(Indices PRIVATE /W4)
+
 target_include_directories(Indices PRIVATE "${GLFW_DIR}/include")
 target_link_libraries(Indices "glfw")
 

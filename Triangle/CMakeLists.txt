@@ -8,6 +8,8 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
 
 add_executable(Triangle ${SRC})
 
+target_compile_options(Triangle PRIVATE /W4)
+
 target_include_directories(Triangle PRIVATE "${GLFW_DIR}/include")
 target_link_libraries(Triangle "glfw")
 
