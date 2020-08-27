@@ -10,22 +10,33 @@
 struct Vertex
 {
 	glm::vec3 myPosition;
-	glm::vec3 myNormal;
 	glm::vec2 myTextureCoordinates;
 
 	bool operator==(const Vertex& aOther) const
 	{
-		return myPosition == aOther.myPosition && myNormal == aOther.myNormal && myTextureCoordinates == aOther.myTextureCoordinates;
+		return myPosition == aOther.myPosition &&myTextureCoordinates == aOther.myTextureCoordinates;
 	}
 };
+
+inline void CombineHash(std::size_t& aSeed) {}
+
+template <typename T, typename... Rest>
+inline void CombineHash(std::size_t& aSeed, const T& aValue, Rest... aRest)
+{
+	std::hash<T> hasher;
+	aSeed ^= hasher(aValue) + 0x9e3779b9 + (aSeed << 6) + (aSeed >> 2);
+	CombineHash(aSeed, aRest...);
+}
 
 namespace std
 {
 	template<> struct hash<Vertex>
 	{
-		size_t operator()(Vertex const& vertex) const
+		size_t operator()(Vertex const& aVertex) const
 		{
-			return ((hash<glm::vec3>()(vertex.myPosition) ^ (hash<glm::vec3>()(vertex.myNormal) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.myTextureCoordinates) << 1);
+			size_t test = 0;
+			CombineHash(test, aVertex.myPosition, aVertex.myTextureCoordinates);
+			return test;
 		}
 	};
 }

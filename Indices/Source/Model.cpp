@@ -97,13 +97,6 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
             vertex.myPosition.y = attributes.vertices[3 * index.vertex_index + 1];
             vertex.myPosition.z = attributes.vertices[3 * index.vertex_index + 2];
 
-            if (attributes.normals.size())
-            {
-                vertex.myNormal.x = attributes.normals[3 * index.normal_index + 0];
-                vertex.myNormal.y = attributes.normals[3 * index.normal_index + 1];
-                vertex.myNormal.z = attributes.normals[3 * index.normal_index + 2];
-            }
-
             if (attributes.texcoords.size())
             {
                 vertex.myTextureCoordinates.x = attributes.texcoords[2 * index.texcoord_index + 0];
@@ -184,13 +177,10 @@ void Model::LoadFBX(const std::string aPath)
 
             for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
             {
-                const aiVector3D zero3D(0.0f, 0.0f, 0.0f);
                 const aiVector3D* position = &(aiMesh->mVertices[face.mIndices[vertexIndex]]);
-                const aiVector3D* normal = aiMesh->mNormals ? &(aiMesh->mNormals[face.mIndices[vertexIndex]]) : &zero3D;
 
                 Vertex vertex;
                 vertex.myPosition = CastToVec3(*position);
-                vertex.myNormal = CastToVec3(*normal);
 
                 if (aiMesh->HasTextureCoords(0))
                 {
