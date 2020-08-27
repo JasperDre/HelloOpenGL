@@ -3,6 +3,7 @@
 #include "GLError.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Vertex.h"
 #include "Texture.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -82,11 +83,8 @@ void RenderContext::LoadModel()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myTextureCoordinates));
 
-	/*glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myNormal));
-
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, myColor));*/
 
 	glBindVertexArray(0);
 

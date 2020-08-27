@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Vertex.h"
 #include "GLError.h"
 #include "Texture.h"
 
@@ -103,13 +104,6 @@ void Model::LoadOBJ(const std::string aPath, const std::string aBaseDirectory)
                 vertex.myNormal.z = attributes.normals[3 * index.normal_index + 2];
             }
 
-            if (attributes.colors.size())
-            {
-                vertex.myColor.x = attributes.colors[3 * index.vertex_index + 0];
-                vertex.myColor.y = attributes.colors[3 * index.vertex_index + 1];
-                vertex.myColor.z = attributes.colors[3 * index.vertex_index + 2];
-            }
-
             if (attributes.texcoords.size())
             {
                 vertex.myTextureCoordinates.x = attributes.texcoords[2 * index.texcoord_index + 0];
@@ -195,18 +189,13 @@ void Model::LoadFBX(const std::string aPath)
                 const aiVector3D* normal = aiMesh->mNormals ? &(aiMesh->mNormals[face.mIndices[vertexIndex]]) : &zero3D;
 
                 Vertex vertex;
-                vertex.myPosition.x = static_cast<float>(position->x);
-                vertex.myPosition.y = static_cast<float>(position->y);
-                vertex.myPosition.z = static_cast<float>(position->z);
-
-                vertex.myNormal.x = static_cast<float>(normal->x);
-                vertex.myNormal.y = static_cast<float>(normal->y);
-                vertex.myNormal.z = static_cast<float>(normal->z);
+                vertex.myPosition = CastToVec3(*position);
+                vertex.myNormal = CastToVec3(*normal);
 
                 if (aiMesh->HasTextureCoords(0))
                 {
-                    vertex.myTextureCoordinates[0] = aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].x;
-                    vertex.myTextureCoordinates[1] = aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].y;
+                    const aiVector2D& textureCoordinates = aiVector2D(aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].x, aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].y);
+                    vertex.myTextureCoordinates = CastToVec2(textureCoordinates);
                 }
 
                 mesh.myVertices.push_back(vertex);
