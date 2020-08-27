@@ -148,14 +148,14 @@ void Model::LoadFBX(const std::string aPath)
 {
     Assimp::Importer importer;
 
-    unsigned int flags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices;
+    unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
     if (!importer.ValidateFlags(flags))
     {
         printf("Flags are incompatible\n");
     }
 
     const aiScene* scene = importer.ReadFile(aPath.c_str(), flags);
-    if (!scene)
+    if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         printf("Failed to load %s %s\n", aPath.c_str(), importer.GetErrorString());
         return;
@@ -166,6 +166,22 @@ void Model::LoadFBX(const std::string aPath)
         const aiMesh* aiMesh = scene->mMeshes[meshIndex];
         Mesh mesh;
 
+        for (unsigned int vertexIndex = 0; vertexIndex < aiMesh->mNumVertices; vertexIndex++)
+        {
+            const aiVector3D* position = &(aiMesh->mVertices[vertexIndex]);
+
+            Vertex vertex;
+            vertex.myPosition = CastToVec3(*position);
+
+            if (aiMesh->HasTextureCoords(0))
+            {
+                const aiVector2D& textureCoordinates = aiVector2D(aiMesh->mTextureCoords[0][vertexIndex].x, aiMesh->mTextureCoords[0][vertexIndex].y);
+                vertex.myTextureCoordinates = CastToVec2(textureCoordinates);
+            }
+
+            mesh.myVertices.push_back(vertex);
+        }
+
         for (unsigned int faceIndex = 0; faceIndex < aiMesh->mNumFaces; ++faceIndex)
         {
             const aiFace& face = aiMesh->mFaces[faceIndex];
@@ -173,22 +189,6 @@ void Model::LoadFBX(const std::string aPath)
             for (unsigned int index = 0; index < face.mNumIndices; ++index)
             {
                 mesh.myIndices.push_back(face.mIndices[index]);
-            }
-
-            for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
-            {
-                const aiVector3D* position = &(aiMesh->mVertices[face.mIndices[vertexIndex]]);
-
-                Vertex vertex;
-                vertex.myPosition = CastToVec3(*position);
-
-                if (aiMesh->HasTextureCoords(0))
-                {
-                    const aiVector2D& textureCoordinates = aiVector2D(aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].x, aiMesh->mTextureCoords[0][face.mIndices[vertexIndex]].y);
-                    vertex.myTextureCoordinates = CastToVec2(textureCoordinates);
-                }
-
-                mesh.myVertices.push_back(vertex);
             }
         }
 
