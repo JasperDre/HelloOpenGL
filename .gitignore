@@ -361,6 +361,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-## Custom
+## Project-specific files and folders
 [Bb]uild/
 ![Dd]ata/**
