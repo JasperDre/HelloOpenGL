@@ -1,7 +1,7 @@
 # HelloOpenGL
 
-Use `Setup.bat` to prepare and generate the solution and projects.
-The generated files will be put in `Build`, which can also be launched using `Launch.bat`.
+Use `GenerateVS2019.bat` to prepare and generate the solution and projects.
+The generated files will be put in `Generated`, which can also be launched using `LaunchVS2019.bat`.
 There are three projects in this repository:
 * Triangle: drawing a 2D triangle using a single color fragment shader. 
 * Cube: drawing a 3D cube using a basic shader.

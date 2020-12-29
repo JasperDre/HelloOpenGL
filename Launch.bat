@@ -1,1 +1,0 @@
-start Build/HelloOpenGL.sln
